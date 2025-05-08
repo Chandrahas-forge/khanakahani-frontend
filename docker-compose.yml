@@ -1,0 +1,87 @@
+##########################
+# Define your services   #
+##########################
+services:
+
+  #─────────────────────────────────────────────────────
+  # 1) Frontend (Vue+Vite) served by Nginx
+  #─────────────────────────────────────────────────────
+  frontend:
+    profiles:
+      - frontend
+    build:
+      context: . # 2. Build from current directory
+      dockerfile: Dockerfile # 3. Use this Dockerfile
+    image: khanakahani-frontend:latest # 4. Tag the built image
+    ports:
+      - "80:80" # 5. Expose container port 80 → host port 80
+    depends_on:
+      - backend # 6. Wait for backend to be “healthy” (see healthcheck below)
+    environment:
+      - VITE_API_BASE_URL=/api # 7. Tell Vite to call `/api/...` at runtime
+    networks:
+      - app-network # 8. Attach to custom network
+
+  #─────────────────────────────────────────────────────
+  # 2) Backend (FastAPI via Uvicorn)
+  #─────────────────────────────────────────────────────
+  backend:
+    profiles:
+      - backend
+    build:
+      context: ../khanakahani-backend # 9. Build from your backend folder
+      dockerfile: Dockerfile # 10. (or omit if it's named Dockerfile)
+    image: khanakahani-backend:latest # 11. Tag the built image
+    ports:
+      - "8000:8000" # 12. Expose Uvicorn’s port
+    depends_on:
+      db:
+        # 13. Start only after DB is ready
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://user:pass@db:5432/khanakahani # 14. Connection string
+      - ALLOWED_ORIGINS=http://localhost # 15. CORS origins for local dev
+    command: >
+      uvicorn main:app --host 0.0.0.0 --port 8000 --proxy-headers                                      # 16. Trust X-Forwarded-* headers from Nginx
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 10s
+      retries: 5
+    networks:
+      - app-network
+
+  #─────────────────────────────────────────────────────
+  # 3) Database (PostgreSQL)
+  #─────────────────────────────────────────────────────
+  db:
+    image: postgres:13-alpine # 17. Lightweight Postgres image
+    profiles:
+      - db
+    restart: always # 18. Always restart on failure
+    environment:
+      POSTGRES_USER: user # 19. DB username
+      POSTGRES_PASSWORD: pass # 20. DB password
+      POSTGRES_DB: khanakahani # 21. Default DB name
+    volumes:
+      - db-data:/var/lib/postgresql/data # 22. Persist data across restarts
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user" ]
+      interval: 10s
+      retries: 5
+    networks:
+      - app-network
+
+##########################
+# Define named volumes   #
+##########################
+volumes:
+  db-data:
+    # 23. Named volume for Postgres data
+
+    ##########################
+    # Define networks        #
+    ##########################
+networks:
+  app-network:
+    # 24. Custom bridge network for intra-service DNS
+    driver: bridge

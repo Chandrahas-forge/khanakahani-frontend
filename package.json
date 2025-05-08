@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:docker": "vite --mode docker",
+    "dev:compose": "vite --mode compose",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
@@ -14,7 +16,15 @@
     "test:coverage:ui": "vitest --coverage --ui",
     "test:coverage:file": "vitest run --coverage --file",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --fix",
-    "lint:check": "eslint . --ext .vue,.js,.ts,.jsx,.tsx"
+    "lint:check": "eslint . --ext .vue,.js,.ts,.jsx,.tsx",
+    "docker:build:frontend": "docker-compose --profile frontend --profile backend --profile db build frontend",
+    "docker:build:backend": "docker-compose build backend",
+    "docker:build:db": "docker-compose build db",
+    "docker:build:all": "docker-compose build --parallel",
+    "docker:up:frontend": "docker-compose --profile frontend up -d --no-deps --build --profile frontend frontend",
+    "docker:down:frontend": "docker-compose down frontend",
+    "docker:restart:frontend": "npm run docker:down:frontend && npm run docker:up:frontend",
+    "docker:restart:full": "npm run docker:down:full && npm run docker:up:full"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.16",
