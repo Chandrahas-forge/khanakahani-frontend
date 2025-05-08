@@ -2,7 +2,7 @@
 import { vi } from 'vitest'
 
 // Partial mock of vue-router - preserve core functionality but mock composables
-vi.mock('vue-router', async (importOriginal) => {
+vi.mock('vue-router', async importOriginal => {
   // Get the actual module first
   const actual = await importOriginal()
   

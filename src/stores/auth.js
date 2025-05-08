@@ -169,21 +169,30 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // Add a method to check auth status
+  // Modify the checkAuth method
   const checkAuth = async () => {
+    if (!token.value) {
+      return
+    }
+
     try {
-      if (token.value) {
-        const config = new Configuration({
-          basePath: API_BASE_URL,
-          accessToken: token.value
-        })
-        const authApi = new AuthenticationApi(config)
-        const response = await authApi.getCurrentUser() // Assuming this endpoint exists
-        user.value = response.data
-      }
+      // Setup authorization header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token.value}`
+      
+      // Get current user data from API
+      const config = new Configuration({
+        basePath: API_BASE_URL
+      })
+      const authApi = new AuthenticationApi(config)
+      const response = await authApi.getCurrentUser()
+      
+      // Update user data if successful
+      setUser(response.data)
     } catch (err) {
       console.error('Auth check failed:', err)
-      logout()
+      
+      // Explicitly call logout instead of clearAuthState
+      await logout()
     }
   }
 

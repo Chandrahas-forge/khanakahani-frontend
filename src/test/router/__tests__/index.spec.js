@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { createRouter, createWebHistory, isNavigationFailure, NavigationFailureType } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 import router from '@/router'
@@ -108,21 +108,21 @@ describe('Router', () => {
 
   it('imports dynamic components correctly', async () => {
     // Get the route definitions that use dynamic imports
-    const recipeDetailRoute = testRouter.options.routes.find(r => r.path === '/recipes/:id');
-    const myRecipesRoute = testRouter.options.routes.find(r => r.path === '/my-recipes');
+    const recipeDetailRoute = testRouter.options.routes.find(r => r.path === '/recipes/:id')
+    const myRecipesRoute = testRouter.options.routes.find(r => r.path === '/my-recipes')
     
     // Verify they're functions (dynamic imports return a function)
-    expect(typeof recipeDetailRoute.component).toBe('function');
-    expect(typeof myRecipesRoute.component).toBe('function');
+    expect(typeof recipeDetailRoute.component).toBe('function')
+    expect(typeof myRecipesRoute.component).toBe('function')
     
     // Try to resolve them - this will trigger the dynamic import
     // We don't need to await the result since our mocks handle it
-    const recipeDetailPromise = recipeDetailRoute.component();
-    const myRecipesPromise = myRecipesRoute.component();
+    const recipeDetailPromise = recipeDetailRoute.component()
+    const myRecipesPromise = myRecipesRoute.component()
     
     // Verify they return promises (which is what dynamic imports do)
-    expect(recipeDetailPromise instanceof Promise).toBe(true);
-    expect(myRecipesPromise instanceof Promise).toBe(true);
+    expect(recipeDetailPromise instanceof Promise).toBe(true)
+    expect(myRecipesPromise instanceof Promise).toBe(true)
   })
 
   it('redirects old recipe paths to new format', async () => {
@@ -130,20 +130,20 @@ describe('Router', () => {
     expect(route).toBeDefined()
     
     // Store the redirect function and verify it's a function
-    const redirectFn = route.redirect;
+    const redirectFn = route.redirect
     expect(typeof redirectFn).toBe('function')
     
     // Test with multiple IDs to ensure coverage
-    const testIds = ['123', 'abc', '456'];
+    const testIds = ['123', 'abc', '456']
     
     testIds.forEach(id => {
       const redirectResult = redirectFn({ params: { id } })
       expect(redirectResult).toEqual({ path: `/recipes/${id}` })
-    });
+    })
     
     // Also test actual navigation with the router
-    await testRouter.push('/recipe/789');
-    expect(testRouter.currentRoute.value.path).toBe('/recipes/789');
+    await testRouter.push('/recipe/789')
+    expect(testRouter.currentRoute.value.path).toBe('/recipes/789')
   })
 
 
@@ -162,20 +162,20 @@ describe('Router', () => {
 
     it('allows access to protected routes when authenticated', async () => {
       // Use a mock computed property for isAuthenticated instead of the reactive one
-      vi.spyOn(authStore, 'isAuthenticated', 'get').mockReturnValue(true);
+      vi.spyOn(authStore, 'isAuthenticated', 'get').mockReturnValue(true)
       
       // Reset the router (alternative to creating a new one)
-      await testRouter.push('/');
-      await testRouter.isReady();
+      await testRouter.push('/')
+      await testRouter.isReady()
       
       // Now navigate to the protected route
-      await testRouter.push('/my-recipes');
+      await testRouter.push('/my-recipes')
       
       // Verify we ended up at the protected route
-      expect(testRouter.currentRoute.value.path).toBe('/my-recipes');
+      expect(testRouter.currentRoute.value.path).toBe('/my-recipes')
       
       // Clean up the spy
-      vi.restoreAllMocks();
+      vi.restoreAllMocks()
     })
 
     it('handles navigation guards for protected routes', async () => {
@@ -201,15 +201,15 @@ describe('Router', () => {
       })
       
       // Attempt the navigation and capture the result
-      const navigationResult = await testRouter.push('/error').catch(e => e);
+      const navigationResult = await testRouter.push('/error').catch(e => e)
       
       // Check if it was aborted (which is a kind of navigation failure)
-      expect(navigationResult).toBeDefined();
-      expect(navigationResult).not.toBeUndefined();
-      expect(navigationResult.toString().includes('Navigation aborted')).toBe(true);
+      expect(navigationResult).toBeDefined()
+      expect(navigationResult).not.toBeUndefined()
+      expect(navigationResult.toString().includes('Navigation aborted')).toBe(true)
       
       // Clean up
-      removeGuard();
+      removeGuard()
     })
   })
   
