@@ -18,7 +18,7 @@ const routes = [
   },
   {
     path: '/recipes',
-    redirect: '/browse',
+    redirect: '/browse'
   },
   {
     path: '/recipes/:id',
@@ -39,11 +39,6 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/grocery-list',
-    name: 'grocery-list',
-    component: () => import('../views/GroceryList.vue')
-  },
-  {
     path: '/login',
     name: 'login',
     component: Login
@@ -54,13 +49,6 @@ const routes = [
     component: () => import('@/views/MyRecipes.vue'),
     meta: { requiresAuth: true }
   },
-  {
-    path: '/favorites',
-    name: 'Favorites',
-    component: () => import('../views/Favorites.vue'),
-    meta: { requiresAuth: true }
-  },
-  // Add a redirect for the old path
   {
     path: '/recipe/:id',
     redirect: to => {

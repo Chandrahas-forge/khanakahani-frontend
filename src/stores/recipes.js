@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { Configuration, RecipesApi } from '@/api'
 import { useAuthStore } from './auth'
-import { getRecipeImage, getRandomRecipeImage, DEFAULT_RECIPE_IMAGE } from '../utils/imageUtils'
+import { getRecipeImage, getRandomRecipeImage } from '../utils/imageUtils'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -44,7 +44,7 @@ export const useRecipeStore = defineStore('recipe', () => {
     }
   }
 
-  const createRecipe = async (recipeData) => {
+  const createRecipe = async recipeData => {
     try {
       loading.value = true
       error.value = null
@@ -66,7 +66,7 @@ export const useRecipeStore = defineStore('recipe', () => {
     }
   }
 
-  const fetchRecipeById = async (id) => {
+  const fetchRecipeById = async id => {
     try {
       loading.value = true
       error.value = null
@@ -97,7 +97,7 @@ export const useRecipeStore = defineStore('recipe', () => {
     }
   }
 
-  const deleteRecipe = async (id) => {
+  const deleteRecipe = async id => {
     try {
       loading.value = true
       error.value = null
@@ -160,7 +160,7 @@ export const useRecipeStore = defineStore('recipe', () => {
     }
   }
 
-  const isFavorite = (recipeId) => {
+  const isFavorite = recipeId => {
     return favorites.value.includes(recipeId)
   }
 

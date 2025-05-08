@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
   // Remove userId computed property and use user.id directly
   const isAuthenticated = computed(() => !!token.value)
 
-  const setUser = (userData) => {
+  const setUser = userData => {
     user.value = userData
     localStorage.setItem('user', JSON.stringify(userData))
   }
@@ -33,16 +33,16 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated: isAuthenticated.value
   })
 
-  const validateEmail = (email) => {
+  const validateEmail = email => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
   }
 
-  const validatePassword = (password) => {
+  const validatePassword = password => {
     return password.length >= 6
   }
 
-  const validateForm = (email, password, isLogin = true) => {
+  const validateForm = (email, password) => { // Removed isLogin
     errors.value = {}  // Now errors is properly defined
     
     if (!email) {
@@ -85,8 +85,8 @@ export const useAuthStore = defineStore('auth', () => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token.value}`
       
       return true
-    } catch (error) {
-      console.error('Login error:', error)
+    } catch (err) { // Changed from 'error' to 'err'
+      console.error('Login error:', err) // Updated to use 'err'
       errors.value.general = 'Invalid email or password'
       return false
     }
@@ -111,8 +111,10 @@ export const useAuthStore = defineStore('auth', () => {
       isAuthenticated.value = true
       
       // After registration, login the user
-      return await login(email, password)
-    } catch (error) {
+      return true
+    } catch (err) { // Changed from 'error' to 'err'
+      // Consider logging the error or handling specific error cases
+      console.error('Registration failed:', err) // Added error logging
       errors.value.general = 'Registration failed. Please try again.'
       return false
     }

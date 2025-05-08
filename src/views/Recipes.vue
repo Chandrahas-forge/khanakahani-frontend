@@ -1,41 +1,65 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Browse Recipes</h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">
+      Browse Recipes
+    </h1>
 
     <!-- Search and Filter -->
     <div class="mb-8">
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1">
           <input
+            v-model="searchQuery"
             type="text"
             placeholder="Search recipes..."
             class="input"
-            v-model="searchQuery"
           >
         </div>
         <div class="flex gap-4">
-          <select class="input" v-model="sortBy">
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="rating">Rating</option>
+          <select
+            v-model="sortBy"
+            class="input"
+          >
+            <option value="newest">
+              Newest
+            </option>
+            <option value="oldest">
+              Oldest
+            </option>
+            <option value="rating">
+              Rating
+            </option>
           </select>
         </div>
       </div>
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="text-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-      <p class="mt-4 text-gray-500">Loading recipes...</p>
+    <div
+      v-if="loading"
+      class="text-center py-12"
+    >
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto" />
+      <p class="mt-4 text-gray-500">
+        Loading recipes...
+      </p>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="text-center py-12">
-      <p class="text-red-500">{{ error }}</p>
+    <div
+      v-else-if="error"
+      class="text-center py-12"
+    >
+      <p class="text-red-500">
+        {{ error }}
+      </p>
     </div>
 
     <!-- Recipe Grid -->
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div
+      v-else
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+    >
       <div
         v-for="recipe in filteredRecipes"
         :key="recipe.id"
@@ -51,14 +75,20 @@
         </div>
         <div class="p-4">
           <h3 class="text-lg font-medium text-gray-900">
-            <router-link :to="`/recipe/${recipe.id}`" class="hover:text-primary-600">
+            <router-link
+              :to="`/recipe/${recipe.id}`"
+              class="hover:text-primary-600"
+            >
               {{ recipe.title }}
             </router-link>
           </h3>
           <div class="mt-4 flex items-center justify-between">
             <div class="flex items-center">
               <div class="flex items-center">
-                <template v-for="n in 5" :key="n">
+                <template
+                  v-for="n in 5"
+                  :key="n"
+                >
                   <svg
                     class="h-5 w-5"
                     :class="n <= recipe.rating ? 'text-yellow-400' : 'text-gray-300'"

@@ -9,25 +9,36 @@
       class="flex gap-2 mb-2"
     >
       <input 
-        type="text"
         v-model="localIngredients[index]"
+        type="text"
         class="input flex-grow"
         @input="updateParent"
       >
       <button 
         type="button" 
-        @click="removeIngredient(index)"
         class="btn btn-danger px-2 py-1"
+        aria-label="Remove ingredient"
+        @click="removeIngredient(index)"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </button>
     </div>
     <button 
       type="button"
-      @click="addIngredient"
       class="btn btn-secondary mt-2"
+      @click="addIngredient"
     >
       Add Ingredient
     </button>
@@ -50,7 +61,7 @@ const emit = defineEmits(['update:modelValue'])
 const localIngredients = ref([...props.modelValue])
 
 // Watch for external changes
-watch(() => props.modelValue, (newValue) => {
+watch(() => props.modelValue, newValue => {
   localIngredients.value = [...newValue]
 }, { deep: true })
 
@@ -63,7 +74,7 @@ const addIngredient = () => {
   updateParent()
 }
 
-const removeIngredient = (index) => {
+const removeIngredient = index => {
   localIngredients.value.splice(index, 1)
   updateParent()
 }

@@ -1,8 +1,11 @@
 /** @type {import('tailwindcss').Config} */
+import tailwindForms from '@tailwindcss/forms'
+import tailwindAspectRatio from '@tailwindcss/aspect-ratio'
+
 export default {
   content: [
-    "./index.html",
-    "./src/**/*.{vue,js,ts,jsx,tsx}",
+    './index.html',
+    './src/**/*.{vue,js,ts,jsx,tsx}'
   ],
   theme: {
     extend: {
@@ -17,13 +20,13 @@ export default {
           600: '#475569',
           700: '#334155',
           800: '#1e293b',
-          900: '#0f172a',
-        },
-      },
-    },
+          900: '#0f172a'
+        }
+      }
+    }
   },
   plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/aspect-ratio'),
-  ],
-} 
+    tailwindForms,
+    tailwindAspectRatio
+  ]
+}

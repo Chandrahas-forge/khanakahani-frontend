@@ -1,27 +1,49 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Edit Recipe</h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">
+      Edit Recipe
+    </h1>
 
     <!-- Loading State -->
-    <div v-if="loading" class="text-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-      <p class="mt-4 text-gray-500">Loading recipe...</p>
+    <div
+      v-if="loading"
+      class="text-center py-12"
+    >
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto" />
+      <p class="mt-4 text-gray-500">
+        Loading recipe...
+      </p>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="text-center py-12">
-      <p class="text-red-500">{{ error }}</p>
+    <div
+      v-else-if="error"
+      class="text-center py-12"
+    >
+      <p class="text-red-500">
+        {{ error }}
+      </p>
     </div>
 
-    <form v-else @submit.prevent="handleSubmit" class="max-w-2xl mx-auto">
+    <form
+      v-else
+      class="max-w-2xl mx-auto"
+      @submit.prevent="handleSubmit"
+    >
       <!-- Add error message display -->
-      <div v-if="recipeStore.error" class="mb-6 p-4 bg-red-100 text-red-700 rounded">
+      <div
+        v-if="recipeStore.error"
+        class="mb-6 p-4 bg-red-100 text-red-700 rounded"
+      >
         {{ recipeStore.error }}
       </div>
 
       <!-- Title -->
       <div class="mb-6">
-        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="title"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Recipe Title
         </label>
         <input
@@ -36,12 +58,26 @@
 
       <!-- Cuisine Type -->
       <div class="mb-6">
-        <label for="cuisine" class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="cuisine"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Cuisine Type
         </label>
-        <select id="cuisine" v-model="form.cuisine" class="input" required>
-          <option value="">Select cuisine type</option>
-          <option v-for="cuisine in cuisineTypes" :key="cuisine" :value="cuisine">
+        <select
+          id="cuisine"
+          v-model="form.cuisine"
+          class="input"
+          required
+        >
+          <option value="">
+            Select cuisine type
+          </option>
+          <option
+            v-for="cuisine in cuisineTypes"
+            :key="cuisine"
+            :value="cuisine"
+          >
             {{ cuisine }}
           </option>
         </select>
@@ -52,7 +88,10 @@
 
       <!-- Steps -->
       <div class="mb-6">
-        <label for="steps" class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="steps"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Cooking Steps
         </label>
         <textarea
@@ -61,12 +100,15 @@
           rows="6"
           class="input"
           required
-        ></textarea>
+        />
       </div>
 
       <!-- Tags -->
       <div class="mb-6">
-        <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="tags"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Tags
         </label>
         <input

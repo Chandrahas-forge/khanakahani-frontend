@@ -6,8 +6,15 @@
         <div class="flex justify-between h-16">
           <div class="flex">
             <div class="flex-shrink-0 flex items-center">
-              <router-link to="/" class="flex items-center">
-                <img :src="DEFAULT_RECIPE_IMAGE" alt="Brand" class="h-8 w-auto">
+              <router-link
+                to="/"
+                class="flex items-center"
+              >
+                <img
+                  :src="DEFAULT_RECIPE_IMAGE"
+                  alt="Brand"
+                  class="h-8 w-auto"
+                >
                 <span class="ml-2 text-xl font-bold text-primary-600">KhanaKahani</span>
               </router-link>
             </div>
@@ -31,8 +38,8 @@
             <template v-if="authStore.isAuthenticated">
               <span class="mr-4 text-gray-600">{{ authStore.user?.email }}</span>
               <button
-                @click="handleLogout"
                 class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium"
+                @click="handleLogout"
               >
                 Logout
               </button>
@@ -50,20 +57,26 @@
     </nav>
 
     <!-- Add loading overlay -->
-    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+    <div
+      v-if="loading"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white" />
     </div>
 
     <!-- Main Content -->
     <main class="flex-grow">
-      <router-view></router-view>
+      <router-view />
     </main>
 
     <!-- Footer -->
     <footer class="bg-gray-50 border-t border-gray-200 py-6">
       <div class="container mx-auto px-4">
         <p class="text-center text-gray-500 text-sm">
-          <span>Created with <a href="https://github.com/Chandrahas-forge/khanakahani-frontend" class="text-primary-600 hover:text-primary-700">KhanaKahani</a></span>
+          <span>Created with <a
+            href="https://github.com/Chandrahas-forge/khanakahani-frontend"
+            class="text-primary-600 hover:text-primary-700"
+          >KhanaKahani</a></span>
         </p>
       </div>
     </footer>
@@ -88,12 +101,12 @@ const handleLogout = async () => {
 
 // Navigation items based on auth state
 const navigation = computed(() => [
-  { name: 'Explore', href: '/explore' },
-  { name: 'Browse Recipes', href: '/recipes' },
+  // Show home for everyone
+  { name: 'Home', href: '/' },
+  // Protected routes only for authenticated users
   ...(authStore.isAuthenticated ? [
-    { name: 'Create Recipe', href: '/create-recipe' },
-    { name: 'My Recipes', href: '/my-recipes' },
-    { name: 'Favorites', href: '/favorites' }
+    { name: 'Browse Recipes', href: '/browse' }, // Changed from /recipes to /browse
+    { name: 'My Recipes', href: '/my-recipes' }
   ] : [])
 ])
 </script>

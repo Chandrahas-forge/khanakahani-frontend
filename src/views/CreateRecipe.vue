@@ -1,16 +1,27 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Create New Recipe</h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">
+      Create New Recipe
+    </h1>
 
-    <form @submit.prevent="handleSubmit" class="max-w-2xl mx-auto">
+    <form
+      class="max-w-2xl mx-auto"
+      @submit.prevent="handleSubmit"
+    >
       <!-- Add error message display -->
-      <div v-if="recipeStore.error" class="mb-6 p-4 bg-red-100 text-red-700 rounded">
+      <div
+        v-if="recipeStore.error"
+        class="mb-6 p-4 bg-red-100 text-red-700 rounded"
+      >
         {{ recipeStore.error }}
       </div>
 
       <!-- Title -->
       <div class="mb-6">
-        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="title"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Recipe Title
         </label>
         <input
@@ -24,12 +35,26 @@
       
       <!-- Add cuisine field -->
       <div class="mb-6">
-        <label for="cuisine" class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="cuisine"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Cuisine Type
         </label>
-        <select id="cuisine" v-model="form.cuisine" class="input" required>
-          <option value="">Select cuisine type</option>
-          <option v-for="cuisine in cuisineTypes" :key="cuisine" :value="cuisine">
+        <select
+          id="cuisine"
+          v-model="form.cuisine"
+          class="input"
+          required
+        >
+          <option value="">
+            Select cuisine type
+          </option>
+          <option
+            v-for="cuisine in cuisineTypes"
+            :key="cuisine"
+            :value="cuisine"
+          >
             {{ cuisine }}
           </option>
         </select>
@@ -42,7 +67,10 @@
 
       <!-- Add steps field -->
       <div class="mb-6">
-        <label for="steps" class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="steps"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Cooking Steps
         </label>
         <textarea
@@ -52,12 +80,15 @@
           class="input"
           placeholder="Enter cooking steps"
           required
-        ></textarea>
+        />
       </div>
 
       <!-- Add tags field -->
       <div class="mb-6">
-        <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="tags"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Tags
         </label>
         <input
@@ -75,7 +106,10 @@
           Rating
         </label>
         <div class="flex items-center">
-          <template v-for="n in 5" :key="n">
+          <template
+            v-for="n in 5"
+            :key="n"
+          >
             <button
               type="button"
               class="focus:outline-none"
