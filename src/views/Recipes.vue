@@ -43,9 +43,10 @@
       >
         <div class="aspect-w-16 aspect-h-9">
           <img
-            :src="recipe.image"
+            :src="recipe.image || getRecipeImage(recipe.id)"
             :alt="recipe.title"
             class="w-full h-48 object-cover"
+            @error="handleImageError($event, recipe)"
           >
         </div>
         <div class="p-4">
@@ -54,9 +55,6 @@
               {{ recipe.title }}
             </router-link>
           </h3>
-          <p class="mt-2 text-sm text-gray-500 line-clamp-2">
-            {{ recipe.description }}
-          </p>
           <div class="mt-4 flex items-center justify-between">
             <div class="flex items-center">
               <div class="flex items-center">
@@ -84,6 +82,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRecipeStore } from '../stores/recipes'
 import { storeToRefs } from 'pinia'
+import { getRecipeImage, DEFAULT_RECIPE_IMAGE } from '../utils/imageUtils'
 
 const recipeStore = useRecipeStore()
 const { recipes, loading, error } = storeToRefs(recipeStore)
@@ -98,9 +97,7 @@ const filteredRecipes = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(recipe => 
-      recipe.title.toLowerCase().includes(query) ||
-      recipe.description.toLowerCase().includes(query)
-    )
+      recipe.title.toLowerCase().includes(query))
   }
   
   // Sort
@@ -122,4 +119,9 @@ const filteredRecipes = computed(() => {
 onMounted(() => {
   recipeStore.fetchRecipes()
 })
-</script> 
+
+// Add image error handler
+const handleImageError = (event, recipe) => {
+  event.target.src = getRecipeImage(recipe.id) || DEFAULT_RECIPE_IMAGE
+}
+</script>

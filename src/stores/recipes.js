@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { Configuration, RecipesApi } from '@/api'
 import { useAuthStore } from './auth'
+import { getRecipeImage, getRandomRecipeImage, DEFAULT_RECIPE_IMAGE } from '../utils/imageUtils'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -11,6 +12,7 @@ export const useRecipeStore = defineStore('recipe', () => {
   const loading = ref(false)
   const error = ref(null)
   const trendingRecipes = ref([])
+  const favorites = ref([])
 
   const getApiConfig = () => {
     const authStore = useAuthStore()
@@ -32,7 +34,7 @@ export const useRecipeStore = defineStore('recipe', () => {
       )
       recipes.value = response.data.map(recipe => ({
         ...recipe,
-        image: recipe.image || 'https://via.placeholder.com/300?text=No+Image'
+        image: recipe.image || getRecipeImage(recipe.id)
       }))
     } catch (err) {
       error.value = 'Failed to load recipes. Please try again.'
@@ -72,7 +74,7 @@ export const useRecipeStore = defineStore('recipe', () => {
       const response = await recipesApi.readRecipeRecipesRecipeIdGet(id)
       currentRecipe.value = {
         ...response.data,
-        image: response.data.image || 'https://via.placeholder.com/300?text=No+Image'
+        image: response.data.image || getRecipeImage(response.data.id)
       }
     } catch (err) {
       error.value = 'Recipe not found or unable to load.'
@@ -88,7 +90,7 @@ export const useRecipeStore = defineStore('recipe', () => {
       const response = await recipesApi.listRecipesRecipesGet(null, null, null, 1, 3)
       trendingRecipes.value = response.data.map(recipe => ({
         ...recipe,
-        image: recipe.image || 'https://via.placeholder.com/300?text=No+Image'
+        image: recipe.image || getRandomRecipeImage()
       }))
     } catch (err) {
       console.error('Error fetching trending recipes:', err)
@@ -111,6 +113,104 @@ export const useRecipeStore = defineStore('recipe', () => {
     }
   }
 
+  const markFavorite = async (recipeId, isFavorite) => {
+    try {
+      loading.value = true
+      error.value = null
+      const recipesApi = new RecipesApi(getApiConfig())
+      
+      // Ensure recipeId is a number
+      const id = typeof recipeId === 'string' ? parseInt(recipeId, 10) : recipeId
+
+      // Use the correct API method
+      if (isFavorite) {
+        await recipesApi.markFavoriteRecipesRecipeIdFavoritePost(id)
+      } else {
+        await recipesApi.removeFavoriteRecipesRecipeIdFavoriteDelete(id)
+      }
+
+    } catch (err) {
+      error.value = isFavorite 
+        ? 'Failed to add to favorites' 
+        : 'Failed to remove from favorites'
+      console.error('Error updating favorite status:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const fetchFavorites = async () => {
+    try {
+      loading.value = true
+      error.value = null
+      const recipesApi = new RecipesApi(getApiConfig())
+      // Check the actual API endpoint name from your OpenAPI spec
+      const response = await recipesApi.getFavoritesRecipesFavoritesGet()
+      favorites.value = response.data.map(recipe => ({
+        ...recipe,
+        image: recipe.image || getRandomRecipeImage(),
+        is_favorite: true
+      }))
+    } catch (err) {
+      error.value = 'Failed to load favorite recipes.'
+      console.error('Error fetching favorites:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const isFavorite = (recipeId) => {
+    return favorites.value.includes(recipeId)
+  }
+
+  const updateRecipe = async (id, recipeData) => {
+    try {
+      loading.value = true
+      error.value = null
+      
+      // Ensure recipeData matches RecipeCreate schema
+      const recipeCreate = {
+        title: recipeData.title,
+        cuisine: recipeData.cuisine,
+        ingredients: recipeData.ingredients,
+        steps: recipeData.steps,
+        tags: recipeData.tags || null // Optional field
+      }
+
+      // Use the generated API client
+      const recipesApi = new RecipesApi(getApiConfig())
+      const { data } = await recipesApi.replaceRecipeRecipesRecipeIdPut(
+        id,
+        recipeCreate
+      )
+      
+      // Update local state with RecipeOut data
+      const index = recipes.value.findIndex(r => r.id === id)
+      if (index !== -1) {
+        recipes.value[index] = data
+      }
+      if (currentRecipe.value?.id === id) {
+        currentRecipe.value = data
+      }
+      
+      return data
+    } catch (err) {
+      // Handle specific error cases
+      if (err.response?.status === 404) {
+        error.value = 'Recipe not found'
+      } else if (err.response?.status === 422) {
+        error.value = 'Invalid recipe data'
+      } else {
+        error.value = 'Failed to update recipe'
+      }
+      console.error('Error updating recipe:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     recipes,
     currentRecipe,
@@ -121,6 +221,11 @@ export const useRecipeStore = defineStore('recipe', () => {
     createRecipe,
     fetchRecipeById,
     fetchTrendingRecipes,
-    deleteRecipe
+    deleteRecipe,
+    favorites,
+    markFavorite,
+    fetchFavorites,
+    isFavorite,
+    updateRecipe
   }
 })

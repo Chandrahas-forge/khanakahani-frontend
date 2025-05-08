@@ -3,7 +3,7 @@
     <!-- Background Image with Overlay -->
     <div class="absolute inset-0 z-[-1]">
       <img
-        src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+        :src="DEFAULT_RECIPE_IMAGE"
         alt="Food background"
         class="w-full h-full object-cover"
       />
@@ -164,6 +164,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { DEFAULT_RECIPE_IMAGE } from '../utils/imageUtils'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -191,4 +192,4 @@ const handleSubmit = async () => {
     router.push('/')
   }
 }
-</script> 
+</script>

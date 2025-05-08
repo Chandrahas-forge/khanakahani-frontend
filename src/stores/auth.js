@@ -1,16 +1,37 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { AuthenticationApi, Configuration } from '@/api'
 import axios from 'axios'
 
 const API_BASE_URL = 'http://localhost:8000' // Replace with your API URL
 
 export const useAuthStore = defineStore('auth', () => {
-  // Initialize from localStorage
+  // State - use refs for mutable state
   const user = ref(JSON.parse(localStorage.getItem('user')) || null)
-  const isAuthenticated = ref(!!localStorage.getItem('token'))
-  const errors = ref({})
   const token = ref(localStorage.getItem('token'))
+  const errors = ref({})
+
+  // Remove userId computed property and use user.id directly
+  const isAuthenticated = computed(() => !!token.value)
+
+  const setUser = (userData) => {
+    user.value = userData
+    localStorage.setItem('user', JSON.stringify(userData))
+  }
+
+  const clearUser = () => {
+    user.value = null
+    token.value = null
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
+  }
+
+  // Current state helpers
+  const getUserState = () => ({
+    id: user.value?.id ?? null,
+    email: user.value?.email,
+    isAuthenticated: isAuthenticated.value
+  })
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -22,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const validateForm = (email, password, isLogin = true) => {
-    errors.value = {}
+    errors.value = {}  // Now errors is properly defined
     
     if (!email) {
       errors.value.email = 'Email is required'
@@ -51,14 +72,16 @@ export const useAuthStore = defineStore('auth', () => {
       const authApi = new AuthenticationApi(config)
       const response = await authApi.loginAuthLoginPost(email, password)
       
+      // Update token first
       token.value = response.data.access_token
       localStorage.setItem('token', token.value)
       
-      // Store user data
-      user.value = { email, id: response.data.user_id } // Adjust based on your API response
-      localStorage.setItem('user', JSON.stringify(user.value))
+      // Update user data using ref, not computed
+      const userData = { email, id: response.data.user_id }
+      user.value = userData
+      localStorage.setItem('user', JSON.stringify(userData))
       
-      isAuthenticated.value = true
+      // Set axios headers after successful login
       axios.defaults.headers.common['Authorization'] = `Bearer ${token.value}`
       
       return true
@@ -163,10 +186,14 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    user,
-    isAuthenticated,
+    user: computed(() => user.value),
+    token: computed(() => token.value),
     errors,
-    token,
+    isAuthenticated,
+    // Remove userId from returns
+    setUser,
+    clearUser,
+    getUserState,
     login,
     register,
     logout,

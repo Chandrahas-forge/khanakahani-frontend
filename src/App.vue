@@ -7,8 +7,8 @@
           <div class="flex">
             <div class="flex-shrink-0 flex items-center">
               <router-link to="/" class="flex items-center">
-                <img src="https://open-eats.github.io/images/chef.png" alt="Brand" class="h-8 w-auto">
-                <span class="ml-2 text-xl font-bold text-primary-600">Food Blog</span>
+                <img :src="DEFAULT_RECIPE_IMAGE" alt="Brand" class="h-8 w-auto">
+                <span class="ml-2 text-xl font-bold text-primary-600">KhanaKahani</span>
               </router-link>
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -63,9 +63,7 @@
     <footer class="bg-gray-50 border-t border-gray-200 py-6">
       <div class="container mx-auto px-4">
         <p class="text-center text-gray-500 text-sm">
-          <span>Created with <a href="https://github.com/your-repo" class="text-primary-600 hover:text-primary-700">Food Blog</a></span>
-          <span class="mx-2">-</span>
-          <span>Icons by <a href="https://heroicons.com" class="text-primary-600 hover:text-primary-700">Heroicons</a></span>
+          <span>Created with <a href="https://github.com/Chandrahas-forge/khanakahani-frontend" class="text-primary-600 hover:text-primary-700">KhanaKahani</a></span>
         </p>
       </div>
     </footer>
@@ -77,6 +75,7 @@ import { useAuthStore } from './stores/auth'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import { DEFAULT_RECIPE_IMAGE } from './utils/imageUtils'
 
 const router = useRouter()
 const authStore = useAuthStore()

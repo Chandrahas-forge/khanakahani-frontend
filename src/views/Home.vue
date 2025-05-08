@@ -5,7 +5,7 @@
       <div class="absolute inset-0">
         <img
           class="w-full h-full object-cover"
-          src="https://open-eats.github.io/images/steak.png"
+          :src="DEFAULT_RECIPE_IMAGE"
           alt="Food background"
         >
         <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
@@ -27,7 +27,7 @@
         <div v-for="recipe in recipes" :key="recipe.id" class="bg-white rounded-lg shadow overflow-hidden">
           <div class="aspect-w-16 aspect-h-9">
             <img
-              :src="recipe.image"
+              :src="getRandomRecipeImage()"
               :alt="recipe.title"
               class="w-full h-48 object-cover"
             >
@@ -38,9 +38,6 @@
                 {{ recipe.title }}
               </router-link>
             </h3>
-            <p class="mt-2 text-sm text-gray-500 line-clamp-2">
-              {{ recipe.description }}
-            </p>
             <div class="mt-4 flex items-center justify-between">
               <div class="flex items-center">
                 <div class="flex items-center">
@@ -61,16 +58,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Browse Button -->
-      <div class="mt-12 text-center">
-        <router-link
-          to="/browse"
-          class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
-        >
-          Browse all recipes
-        </router-link>
-      </div>
     </div>
   </div>
 </template>
@@ -79,6 +66,7 @@
 import { onMounted } from 'vue'
 import { useRecipeStore } from '../stores/recipes'
 import { storeToRefs } from 'pinia'
+import { getRandomRecipeImage, DEFAULT_RECIPE_IMAGE } from '../utils/imageUtils'
 
 const recipeStore = useRecipeStore()
 const { recipes, loading, error } = storeToRefs(recipeStore)
@@ -86,4 +74,4 @@ const { recipes, loading, error } = storeToRefs(recipeStore)
 onMounted(() => {
   recipeStore.fetchRecipes()
 })
-</script> 
+</script>

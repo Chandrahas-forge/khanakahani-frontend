@@ -926,6 +926,16 @@
           "owner_id": {
             "type": "integer",
             "title": "Owner Id"
+          },
+          "total_favorites": {
+            "type": "integer",
+            "title": "Total Favorites",
+            "default": 0
+          },
+          "is_favorite": {
+            "type": "boolean",
+            "title": "Is Favorite",
+            "default": false
           }
         },
         "type": "object",

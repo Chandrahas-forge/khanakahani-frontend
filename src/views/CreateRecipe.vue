@@ -21,21 +21,7 @@
           required
         >
       </div>
-
-      <!-- Description -->
-      <div class="mb-6">
-        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-          Description
-        </label>
-        <textarea
-          id="description"
-          v-model="form.description"
-          rows="4"
-          class="input"
-          required
-        ></textarea>
-      </div>
-
+      
       <!-- Add cuisine field -->
       <div class="mb-6">
         <label for="cuisine" class="block text-sm font-medium text-gray-700 mb-2">
@@ -80,20 +66,6 @@
           type="text"
           class="input"
           placeholder="Enter tags separated by commas"
-        >
-      </div>
-
-      <!-- Image URL -->
-      <div class="mb-6">
-        <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
-          Image URL
-        </label>
-        <input
-          id="image"
-          v-model="form.image"
-          type="url"
-          class="input"
-          required
         >
       </div>
 
@@ -160,7 +132,6 @@ const cuisineTypes = [
 
 const form = ref({
   title: '',
-  description: '',
   cuisine: '',
   ingredients: [], // Now this will be an array instead of a string
   steps: '',
@@ -175,7 +146,6 @@ const handleSubmit = async () => {
     // Properly format the data for API submission
     const recipeData = {
       title: form.value.title.trim(),
-      description: form.value.description.trim(),
       cuisine: form.value.cuisine || 'Other',
       ingredients: form.value.ingredients,
       steps: form.value.steps.trim(),

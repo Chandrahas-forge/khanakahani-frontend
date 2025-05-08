@@ -165,6 +165,18 @@ export interface RecipeOut {
      * @memberof RecipeOut
      */
     'owner_id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof RecipeOut
+     */
+    'total_favorites'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RecipeOut
+     */
+    'is_favorite'?: boolean;
 }
 /**
  * 

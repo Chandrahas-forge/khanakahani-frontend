@@ -12,6 +12,8 @@ Name | Type | Description | Notes
 **steps** | **string** |  | [default to undefined]
 **id** | **number** |  | [default to undefined]
 **owner_id** | **number** |  | [default to undefined]
+**total_favorites** | **number** |  | [optional] [default to 0]
+**is_favorite** | **boolean** |  | [optional] [default to false]
 
 ## Example
 
@@ -26,6 +28,8 @@ const instance: RecipeOut = {
     steps,
     id,
     owner_id,
+    total_favorites,
+    is_favorite,
 };
 ```
 
