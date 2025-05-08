@@ -11,7 +11,6 @@ export const useRecipeStore = defineStore('recipe', () => {
   const currentRecipe = ref(null)
   const loading = ref(false)
   const error = ref(null)
-  const trendingRecipes = ref([])
   const favorites = ref([])
 
   const getApiConfig = () => {
@@ -84,19 +83,6 @@ export const useRecipeStore = defineStore('recipe', () => {
     }
   }
 
-  const fetchTrendingRecipes = async () => {
-    try {
-      const recipesApi = new RecipesApi(getApiConfig())
-      const response = await recipesApi.listRecipesRecipesGet(null, null, null, 1, 3)
-      trendingRecipes.value = response.data.map(recipe => ({
-        ...recipe,
-        image: recipe.image || getRandomRecipeImage()
-      }))
-    } catch (err) {
-      console.error('Error fetching trending recipes:', err)
-    }
-  }
-
   const deleteRecipe = async id => {
     try {
       loading.value = true
@@ -118,7 +104,7 @@ export const useRecipeStore = defineStore('recipe', () => {
       loading.value = true
       error.value = null
       const recipesApi = new RecipesApi(getApiConfig())
-      
+
       // Ensure recipeId is a number
       const id = typeof recipeId === 'string' ? parseInt(recipeId, 10) : recipeId
 
@@ -130,8 +116,8 @@ export const useRecipeStore = defineStore('recipe', () => {
       }
 
     } catch (err) {
-      error.value = isFavorite 
-        ? 'Failed to add to favorites' 
+      error.value = isFavorite
+        ? 'Failed to add to favorites'
         : 'Failed to remove from favorites'
       console.error('Error updating favorite status:', err)
       throw err
@@ -168,7 +154,7 @@ export const useRecipeStore = defineStore('recipe', () => {
     try {
       loading.value = true
       error.value = null
-      
+
       // Ensure recipeData matches RecipeCreate schema
       const recipeCreate = {
         title: recipeData.title,
@@ -184,7 +170,7 @@ export const useRecipeStore = defineStore('recipe', () => {
         id,
         recipeCreate
       )
-      
+
       // Update local state with RecipeOut data
       const index = recipes.value.findIndex(r => r.id === id)
       if (index !== -1) {
@@ -193,7 +179,7 @@ export const useRecipeStore = defineStore('recipe', () => {
       if (currentRecipe.value?.id === id) {
         currentRecipe.value = data
       }
-      
+
       return data
     } catch (err) {
       // Handle specific error cases
@@ -216,11 +202,9 @@ export const useRecipeStore = defineStore('recipe', () => {
     currentRecipe,
     loading,
     error,
-    trendingRecipes,
     fetchRecipes,
     createRecipe,
     fetchRecipeById,
-    fetchTrendingRecipes,
     deleteRecipe,
     favorites,
     markFavorite,
