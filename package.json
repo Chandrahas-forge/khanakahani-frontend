@@ -21,7 +21,7 @@
     "docker:build:backend": "docker-compose build backend",
     "docker:build:db": "docker-compose build db",
     "docker:build:all": "docker-compose build --parallel",
-    "docker:up:frontend": "docker-compose --profile frontend up -d --no-deps --build --profile frontend frontend",
+    "docker:up:frontend": "docker compose --profile frontend up -d --no-deps --build  frontend",
     "docker:down:frontend": "docker-compose down frontend",
     "docker:restart:frontend": "npm run docker:down:frontend && npm run docker:up:frontend",
     "docker:restart:full": "npm run docker:down:full && npm run docker:up:full"

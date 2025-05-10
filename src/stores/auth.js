@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { AuthenticationApi, Configuration } from '@/api'
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:8000' // Replace with your API URL
+export const API_BASE_URL = __API_BASE_URL__
 
 export const useAuthStore = defineStore('auth', () => {
   // State - use refs for mutable state

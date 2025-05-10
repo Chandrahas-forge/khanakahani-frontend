@@ -2,29 +2,41 @@ import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
-export default defineConfig(({ mode }) => {
-  // 1) load the right .env file for this mode
+export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_')
+
+  // 1️⃣ This is the only base your code ever sees:
+  const API_BASE_URL = env.VITE_API_BASE_URL    // always "/api"
+
+  // 2️⃣ Only in dev, proxy /api to your real backend:
+  const shouldProxy = command === 'serve'
+  const devTarget   = env.VITE_DEV_BACKEND_URL  // e.g. "http://localhost:8000"
 
   return {
     plugins: [vue()],
     resolve: {
-      alias: { '@': path.resolve(__dirname, './src') }
+      alias: { '@': path.resolve(__dirname, 'src') }
     },
-    server: {
-      port: 3000,
-      proxy: {
-        // 2) proxy /api to whatever VITE_API_BASE_URL is
-        '/api': {
-          target: env.VITE_API_BASE_URL,
-          changeOrigin: true,
-          rewrite: p => p.replace(/^\/api/, '')
+
+    // 3️⃣ Dev-only proxy
+    server: shouldProxy
+      ? {
+          proxy: {
+            [API_BASE_URL]: {
+              target: devTarget,
+              changeOrigin: true,
+              rewrite: p => p.replace(new RegExp(`^${API_BASE_URL}`), '')
+            }
+          }
         }
-      }
-    },
+      : undefined,
+
+    // 4️⃣ Bake "/api" into your client bundle
     define: {
-      // 3) make it easy to import in code if you like
-      __API_BASE_URL__: JSON.stringify(env.VITE_API_BASE_URL)
-    }
+      __API_BASE_URL__: JSON.stringify(API_BASE_URL)
+    },
+
+    build: { target: 'esnext' },
+    esbuild: { target: 'esnext' }
   }
 })
